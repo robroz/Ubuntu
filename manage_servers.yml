@@ -1,0 +1,36 @@
+---
+
+- hosts: webserver
+  become: true
+  tasks:
+    - name: update repository index
+      apt:
+        update_cache: yes
+
+    - name: install apache2 package
+      apt:
+        name: apache2
+        state: latest
+
+    - name: add php support
+      apt:
+        name: libapache2-mod-php
+        state: latest
+
+    - name: copy website to server
+      tags: apache,apache2,ubuntu
+      copy:
+       src: index.php
+       dest: /var/www/html
+       owner: root
+       group: root
+       mode: 0644
+
+
+- hosts: DBServer1
+  become: true
+  tasks:
+    - name: install maraiadb
+      apt:
+        name: mariadb-server
+        state: present
